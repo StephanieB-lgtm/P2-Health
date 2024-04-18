@@ -1,12 +1,24 @@
 const moongose = require('mongooese');
 
 const userSchema = new mongose.Schema({
+  createdBy: {
+        type: Schema.Types.ObjectId, 
+        ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    },
  age: {
         type: Number,
        required: true,
         min: 0
     },
- height : {
+ height: {
   type: Number,
   required: true,
      min: 0
