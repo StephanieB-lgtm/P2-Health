@@ -4,20 +4,24 @@ const mongoose = require('mongoose');
 const sessions = require('express-session');
 const app = express();
 const dotenv = require('dotenv');
+const path = require('path')
 
 
 const dbCode = require('./config/mongoKeys');
 dotenv.config({ path: './config/config.env' })
 
-// EJS
+// EJS - looking for views/layout.ejs
 app.use(expressLayouts)
 app.set("view engine", "ejs")
 
-console.log(process.env.MONGO_URI)
+
+// Enabling use of request body with user data
+app.use(express.urlencoded({ extended: true }));
+
 
 mongoose.connect(dbCode.MongoURI)
   .then(() => {
-    console.log("Connected to MongoDB...");
+    console.log("Connected to MongoDB successfully...");
     
   })
   .catch((error) => {
@@ -31,6 +35,9 @@ app.use( sessions({
     saveUninitialized: true
   })
 );
+
+app.use(express.static(path.join(__dirname,'public')))
+
 
 
 // Routes 
