@@ -1,18 +1,23 @@
 const express = require( 'express' );
 const expressLayouts = require('express-ejs-layouts');
 const mongoose = require('mongoose');
+const sessions = require('express-session');
 const app = express();
+const dotenv = require('dotenv');
 
 
-
+const dbCode = require('./config/mongoKeys');
+dotenv.config({ path: './config/config.env' })
 
 // EJS
 app.use(expressLayouts)
 app.set("view engine", "ejs")
-/*
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+
+console.log(process.env.MONGO_URI)
+
+mongoose.connect(dbCode.MongoURI)
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log("Connected to MongoDB...");
     
   })
   .catch((error) => {
@@ -20,7 +25,12 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
   });
 
 // Sessions from Express to save sessions for login 
-*/
+app.use( sessions({
+    secret: 'secretCode',
+    resave: true,
+    saveUninitialized: true
+  })
+);
 
 // Routes 
 
