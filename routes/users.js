@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 
 const user = require('../models/User');
 
 
-router.get('/login', (req, res) => {
+router.get('/login',  (req, res) => {
     res.render('login');
 });
 
 router.get('/register', (req, res) => {
     res.render('register');
 });
-router.post('/register', (req, res) => {
+router.post('/register',async (req, res) => {
     const { name, email, password, password2 } = req.body;
     let errors = [];
   
@@ -41,30 +41,29 @@ router.post('/register', (req, res) => {
       })
     }
     else {
-        user.findOne({email:email}).then(userFound=>{
-            if(userFound){
-                errors.push({msg:'This email/user exists'});
-                res.render('register',{
-                    errors,
-                    name,
-                    email,
-                    password,
-                    password2
-                });
-            }
-            else{
+         try {
+            const userFound = await user.findOne({ email: email });
+            if (userFound) {
+                errors.push({ msg: 'This email/user exists' });
+                // Render form with errors...
+            } else {
+                // Hash password
+                const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
+
                 const newUser = new user({
-                    fullName:name,
+                    fullName: name,
                     email,
-                    password
-                })
-                console.log(newUser);
+                    password: hashedPassword // Save hashed password
+                });
+
+                // Save user to database
+                await newUser.save();
+                console.log('User registered:', newUser);
+                res.send('Registration successful');
             }
-        })
-    }
-}
-    
-    );
-
-
+        } catch (error) {
+            console.error('Error during registration:', error);
+            // Handle error...
+        }
+    }});
 module.exports = router;
