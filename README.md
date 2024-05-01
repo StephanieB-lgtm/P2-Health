@@ -11,7 +11,7 @@ To install the project, you can use the following commands:
 
 ```bash
 $ git clone https://github.com/Alix2044/P2-Health.git
-$ cd theFolder
+$ cd P2-Health
 $ npm install
 
 # Run one of the following commands:
