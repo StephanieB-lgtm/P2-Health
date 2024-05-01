@@ -6,7 +6,6 @@ const dotenv = require('dotenv');
 const path = require('path')
 const passport = require('passport');
 const morgan = require('morgan');
-const isAuthenticated = require('./auth/isAuthenticated');
 
 
 
